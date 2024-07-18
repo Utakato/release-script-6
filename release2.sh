@@ -82,21 +82,13 @@ if [ $? -ne 0 ]; then
 fi
 echo -e "${GREEN}Saved latest commit ${NC}$LATEST_COMMIT_HASH ${GREEN}for live branch to update kubernetes deployment.yaml"
 
-# Find kubernetes manifests --TESTING ONLY--
-kubernetes=~/mock-kubernetes-manifests
+# Find kubernetes manifests
+kubernetes=$(find ~ -type d -name 'kubernetes-manifests' -print -quit)
 if [ -z "$kubernetes" ]; then
     handle_error "Kubernetes manifests directory not found."
 fi
-echo -e "${GREEN}Found kubernetes manifests at ${NC}$kubernetes"
+echo "Found kubernetes manifests at $kubernetes"
 cd $kubernetes
-
-# Find kubernetes manifests
-# kubernetes=$(find ~ -type d -name 'kubernetes-manifests' -print -quit)
-# if [ -z "$kubernetes" ]; then
-#     handle_error "Kubernetes manifests directory not found."
-# fi
-# echo "Found kubernetes manifests at $kubernetes"
-# cd $kubernetes
 
 run_command git checkout master
 run_command git pull
@@ -120,7 +112,7 @@ run_command git push --set-upstream origin cms-release-$RELEASE_VERSION
 echo -e "${GREEN}Pushed the changes to the remote repository${NC}\n"
 
 # Create PR
-PR_URL=$(gh pr create --title "Release CMS $RELEASE_VERSION" --body "Automated release notes for $RELEASE_VERSION" --base "master" --head "cms-release-$RELEASE_VERSION")
+# PR_URL=$(gh pr create --title "Release CMS $RELEASE_VERSION" --body "Automated release notes for $RELEASE_VERSION" --base "master" --head "cms-release-$RELEASE_VERSION")
 if [ $? -ne 0 ]; then
     handle_error "Failed to create a pull request."
 fi
