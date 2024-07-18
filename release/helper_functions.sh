@@ -1,8 +1,12 @@
 # helper_functions.sh
 
+
+# Define paths
+LIVE_BRANCH="live"
 COMMON_DIR="$HOME/release_scripts"
 LOG_FILE="$COMMON_DIR/release.log"
 ENV_FILE="$COMMON_DIR/release_version.env"
+
 mkdir -p "$COMMON_DIR"
 # Define color codes
 RED='\033[0;31m'

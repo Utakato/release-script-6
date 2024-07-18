@@ -2,12 +2,6 @@
 
 clear
 
-LIVE_BRANCH="main"
-# Define log file path
-COMMON_DIR="$HOME/release_scripts"
-LOG_FILE="$COMMON_DIR/release.log"
-ENV_FILE="$COMMON_DIR/release_version.env"
-
 # Check for debug flag
 DEBUG=false
 if [[ "$1" == "debug" ]]; then
@@ -26,8 +20,8 @@ check_gh_installed
 check_gh_logged_in
 
 # Source the release version from the file
-if [ -f release_version.env ]; then
-    source ~/release_version.env
+if [ -f $ENV_FILE ]; then
+    source $ENV_FILE
 else
     handle_error "Release version file not found. Please run the first script to set the release version."
 fi

@@ -2,11 +2,6 @@
 
 clear
 
-LIVE_BRANCH="main"
-COMMON_DIR="$HOME/release_scripts"
-LOG_FILE="$COMMON_DIR/release.log"
-ENV_FILE="$COMMON_DIR/release_version.env"
-
 # Check for debug flag
 DEBUG=false
 if [[ "$1" == "debug" ]]; then
@@ -58,8 +53,7 @@ fi
 echo -e "${GREEN}Release version is valid: $RELEASE_VERSION${NC}"
 
 # Save the release version to a file
-echo "export RELEASE_VERSION=$RELEASE_VERSION" > ~/release_version.env
-
+echo "export RELEASE_VERSION=$RELEASE_VERSION" > $ENV_FILE
 # Log the release version
 echo -e "\n||||||||||||||||||||||||||||||" >> $LOG_FILE
 echo -e "Starting release process for version: $RELEASE_VERSION" >> $LOG_FILE
