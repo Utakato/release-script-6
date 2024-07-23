@@ -45,6 +45,8 @@ echo -e "||||||||||||||||||||||||||||||\n" >> $LOG_FILE
 
 # Create a new release tag
 echo -e "\n${BLUE}Creating a new release tag...${NC}"
+run_command git checkout $LIVE_BRANCH
+run_command git pull
 run_command git tag -a $RELEASE_VERSION -m "Release $RELEASE_VERSION"
 echo -e "${GREEN}Created new release tag${NC}"
 
@@ -62,7 +64,6 @@ echo -e "${GREEN}Created a new release with auto-generated release notes${NC}"
 echo -e "\n${BLUE}Syncing live and dev branches...${NC}"
 run_command git checkout dev
 run_command git pull origin dev
-run_command git pull origin $LIVE_BRANCH
 run_command git merge $LIVE_BRANCH
 run_command git push origin dev
 
@@ -73,11 +74,13 @@ run_command git push origin $LIVE_BRANCH
 echo -e "${GREEN}Synced live and dev branches${NC}"
 
 # Get the latest commit hash
-LATEST_COMMIT_HASH=$(git rev-parse HEAD)
+LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
+LATEST_COMMIT_HASH=$(git rev-list -n 1 "$LATEST_TAG")
+
 if [ $? -ne 0 ]; then
     handle_error "Failed to get the latest commit hash."
 fi
-echo -e "${GREEN}Saved latest commit ${NC}$LATEST_COMMIT_HASH ${GREEN}for live branch to update kubernetes deployment.yaml"
+echo -e "${GREEN}Saved latest commit ${NC}$LATEST_COMMIT_HASH ${GREEN}for release $LATEST_TAG to update kubernetes deployment.yaml"
 
 # Find kubernetes manifests
 kubernetes=$(find ~ -type d -name 'kubernetes-manifests' -print -quit)
@@ -109,7 +112,7 @@ run_command git push --set-upstream origin cms-release-$RELEASE_VERSION
 echo -e "${GREEN}Pushed the changes to the remote repository${NC}\n"
 
 # Create PR
-# PR_URL=$(gh pr create --title "Release CMS $RELEASE_VERSION" --body "Automated release notes for $RELEASE_VERSION" --base "master" --head "cms-release-$RELEASE_VERSION")
+PR_URL=$(gh pr create --title "Release CMS $RELEASE_VERSION" --body "Automated release notes for $RELEASE_VERSION" --base "master" --head "cms-release-$RELEASE_VERSION")
 if [ $? -ne 0 ]; then
     handle_error "Failed to create a pull request."
 fi
