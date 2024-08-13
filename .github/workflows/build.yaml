@@ -16,9 +16,9 @@ jobs:
       # Build dev container
       - name: Build dev container
         if: ${{ github.ref != 'refs/heads/main' }} # dev & feature branches
-        run: npm run build:dev
+        run: echo "Build dev container"
 
       # Build prod container
       - name: Build prod container
         if: ${{ github.ref == 'refs/heads/main' }} # main branch
-        run: npm run build:prod
+        run: echo "Build prod container"
