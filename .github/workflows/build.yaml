@@ -1,0 +1,24 @@
+name: Docker
+on:
+  push:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Setup Node.js environment
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+
+      # Build dev container
+      - name: Build dev container
+        if: ${{ github.ref != 'refs/heads/main' }} # dev & feature branches
+        run: echo "Build dev container"
+
+      # Build prod container
+      - name: Build prod container
+        if: ${{ github.ref == 'refs/heads/main' }} # main branch
+        run: echo "Build prod container"

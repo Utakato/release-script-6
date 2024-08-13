@@ -85,19 +85,9 @@ echo -e "||||||||||||||||||||||||||||||\n" >> $LOG_FILE
 ##########################################
 
 
-# Create a new release candidate branch
-echo -e "\n${BLUE}Creating a new release candidate branch:...${NC}"
-run_command git checkout -b release/$RELEASE_VERSION
-echo -e "${GREEN}Created a new release candidate branch: release/$RELEASE_VERSION${NC}"
-
-# Push the new branch to the remote repository
-echo -e "\n${BLUE}Pushing the new branch to the remote repository...${NC}"
-run_command git push --set-upstream origin release/$RELEASE_VERSION
-echo -e "${GREEN}Pushed the new branch to the remote repository${NC}"
-
 # Use gh CLI to create a pull request for the release
 echo -e "\n${BLUE}Creating a pull request for the release...${NC}"
-PR_URL=$(gh pr create --title "Release $RELEASE_VERSION" --body "Automated release notes for $RELEASE_VERSION" --base "$LIVE_BRANCH" --head "release/$RELEASE_VERSION")
+PR_URL=$(gh pr create --title "Release $RELEASE_VERSION" --body "Automated release notes for $RELEASE_VERSION" --base "$LIVE_BRANCH" --head "dev")
 if [ $? -ne 0 ]; then
     handle_error "Failed to create a pull request."
 fi

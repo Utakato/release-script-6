@@ -71,16 +71,6 @@ echo -e "\n${BLUE}Creating a new release with auto-generated release notes...${N
 run_command gh release create $RELEASE_VERSION --generate-notes
 echo -e "${GREEN}Created a new release with auto-generated release notes${NC}"
 
-# Sync live and dev branches
-echo -e "\n${BLUE}Syncing live and dev branches...${NC}"
-
-run_command git checkout dev
-run_command git pull origin dev
-
-run_command git merge $LIVE_BRANCH
-run_command git push origin dev
-
-echo -e "${GREEN}Synced live and dev branches${NC}"
 
 # Get the latest commit hash
 LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
@@ -138,3 +128,10 @@ echo -e "PR URL: $PR_URL" >> $LOG_FILE
 
 echo -e "\n${YELLOW}Once it is approved, the new release will be deployed to production"
 echo -e "${YELLOW}Hopefully it's not Friday, good luck!${NC}"
+
+
+
+# rewrite:
+# create tag from live. -> push tag to live
+# merge dev into live -> PR for live
+# get rid of 
