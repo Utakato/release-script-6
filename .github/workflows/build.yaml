@@ -4,7 +4,7 @@ on:
 
 jobs:
   build:
-    runs-on: nscloud
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Build dev container
