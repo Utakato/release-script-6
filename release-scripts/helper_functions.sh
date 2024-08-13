@@ -7,7 +7,7 @@
 
 
 # Define paths
-LIVE_BRANCH="live"
+LIVE_BRANCH="main"
 COMMON_DIR="$HOME/release_scripts"
 LOG_FILE="$COMMON_DIR/release.log"
 ENV_FILE="$COMMON_DIR/release_version.env"
