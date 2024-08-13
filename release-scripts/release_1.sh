@@ -85,22 +85,25 @@ echo -e "||||||||||||||||||||||||||||||\n" >> $LOG_FILE
 ##########################################
 
 
-# Create a new release candidate branch
-echo -e "\n${BLUE}Creating a new release candidate branch:...${NC}"
-run_command git checkout -b release/$RELEASE_VERSION
-echo -e "${GREEN}Created a new release candidate branch: release/$RELEASE_VERSION${NC}"
-
-# Push the new branch to the remote repository
-echo -e "\n${BLUE}Pushing the new branch to the remote repository...${NC}"
-run_command git push --set-upstream origin release/$RELEASE_VERSION
-echo -e "${GREEN}Pushed the new branch to the remote repository${NC}"
 
 # Use gh CLI to create a pull request for the release
 echo -e "\n${BLUE}Creating a pull request for the release...${NC}"
-PR_URL=$(gh pr create --title "Release $RELEASE_VERSION" --body "Automated release notes for $RELEASE_VERSION" --base "$LIVE_BRANCH" --head "release/$RELEASE_VERSION")
+PR_URL=$(gh pr create --title "Release $RELEASE_VERSION" --body "Automated release notes for $RELEASE_VERSION" --base "$LIVE_BRANCH" --head "dev")
 if [ $? -ne 0 ]; then
     handle_error "Failed to create a pull request."
 fi
+
+# Create a new release tag
+echo -e "\n${BLUE}Creating a new release tag...${NC}"
+run_command git tag -a $RELEASE_VERSION -m "Release $RELEASE_VERSION"
+echo -e "${GREEN}Created new release tag${NC}"
+
+# Push the release tag
+echo -e "\n${BLUE}Pushing the $RELEASE_VERSION release tag to the remote repository...${NC}"
+run_command git push origin $RELEASE_VERSION
+echo -e "${GREEN}Pushed the $RELEASE_VERSION release tag to the remote repository${NC}"
+
+
 echo -e "${GREEN}Created PR for release $RELEASE_VERSION${NC}"
 echo -e "${BLUE} just copy paste this to your team's slack channel${NC}"
 echo -e "Pleasse help me out with an approval on this PR for MERGING RELEASE $RELEASE_VERSION INTO $LIVE_BRANCH \n\n $PR_URL\nThank you!\n"

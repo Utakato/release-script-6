@@ -54,33 +54,12 @@ echo -e "\n||||||||||||||||||||||||||||||" >> $LOG_FILE
 echo -e "Starting second phase of release process for version: $RELEASE_VERSION" >> $LOG_FILE
 echo -e "||||||||||||||||||||||||||||||\n" >> $LOG_FILE
 
-# Create a new release tag
-echo -e "\n${BLUE}Creating a new release tag...${NC}"
-run_command git checkout $LIVE_BRANCH
-run_command git pull
-run_command git tag -a $RELEASE_VERSION -m "Release $RELEASE_VERSION"
-echo -e "${GREEN}Created new release tag${NC}"
-
-# Push the release tag
-echo -e "\n${BLUE}Pushing the $RELEASE_VERSION release tag to the remote repository...${NC}"
-run_command git push origin $RELEASE_VERSION
-echo -e "${GREEN}Pushed the $RELEASE_VERSION release tag to the remote repository${NC}"
 
 # Create a new release with auto-generated release notes
 echo -e "\n${BLUE}Creating a new release with auto-generated release notes...${NC}"
 run_command gh release create $RELEASE_VERSION --generate-notes
 echo -e "${GREEN}Created a new release with auto-generated release notes${NC}"
 
-# Sync live and dev branches
-echo -e "\n${BLUE}Syncing live and dev branches...${NC}"
-
-run_command git checkout dev
-run_command git pull origin dev
-
-run_command git merge $LIVE_BRANCH
-run_command git push origin dev
-
-echo -e "${GREEN}Synced live and dev branches${NC}"
 
 # Get the latest commit hash
 LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
