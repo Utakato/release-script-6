@@ -7,15 +7,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      # Setup Node.js environment
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+
+      # Build dev container
       - name: Build dev container
         if: ${{ github.ref != 'refs/heads/main' }} # dev & feature branches
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20.x"
-      - run: npm run build
+        run: npm run build:dev
+
+      # Build prod container
       - name: Build prod container
-        if: ${{ github.ref == 'refs/heads/main' }} # dev & feature branches
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20.x"
-      - run: npm run build
+        if: ${{ github.ref == 'refs/heads/main' }} # main branch
+        run: npm run build:prod
