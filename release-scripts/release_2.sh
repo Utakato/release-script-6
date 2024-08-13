@@ -77,43 +77,43 @@ echo -e "${GREEN}Saved latest commit ${NC}$LATEST_COMMIT_HASH ${GREEN}for releas
 
 
 # Find kubernetes manifests
-kubernetes=$(find ~ -type d -name 'kubernetes-manifests' -print -quit)
-if [ -z "$kubernetes" ]; then
-    handle_error "Kubernetes manifests directory not found."
-fi
-echo "Found kubernetes manifests at $kubernetes"
-cd $kubernetes
+# kubernetes=$(find ~ -type d -name 'kubernetes-manifests' -print -quit)
+# if [ -z "$kubernetes" ]; then
+#     handle_error "Kubernetes manifests directory not found."
+# fi
+# echo "Found kubernetes manifests at $kubernetes"
+# cd $kubernetes
 
-run_command git checkout master
-run_command git pull
-run_command git checkout -b cms-release-$RELEASE_VERSION
-echo -e "${GREEN}Created a new release branch: ${NC}cms-release-$RELEASE_VERSION\n"
+# run_command git checkout master
+# run_command git pull
+# run_command git checkout -b cms-release-$RELEASE_VERSION
+# echo -e "${GREEN}Created a new release branch: ${NC}cms-release-$RELEASE_VERSION\n"
 
-# Update deployment.yaml with the latest commit hash
-run_command sed -i '' "s|image: registry\.uw\.systems/uwcouk-cms/uw\.co\.uk-cms-v2:[^ ]*|image: registry.uw.systems/uwcouk-cms/uw.co.uk-cms-v2:$LATEST_COMMIT_HASH|" prod-aws/uwcouk-cms/cms-v2/deployment.yaml
-if [ $? -ne 0 ]; then
-    handle_error "Failed to update deployment.yaml with latest commit hash."
-fi
-echo -e  "${GREEN}Updated deployment.yaml with latest commit hash:${NC} $LATEST_COMMIT_HASH\n"
+# # Update deployment.yaml with the latest commit hash
+# run_command sed -i '' "s|image: registry\.uw\.systems/uwcouk-cms/uw\.co\.uk-cms-v2:[^ ]*|image: registry.uw.systems/uwcouk-cms/uw.co.uk-cms-v2:$LATEST_COMMIT_HASH|" prod-aws/uwcouk-cms/cms-v2/deployment.yaml
+# if [ $? -ne 0 ]; then
+#     handle_error "Failed to update deployment.yaml with latest commit hash."
+# fi
+# echo -e  "${GREEN}Updated deployment.yaml with latest commit hash:${NC} $LATEST_COMMIT_HASH\n"
 
-# Commit the changes
-run_command git add .
-run_command git commit -m "Update CMS image to $LATEST_COMMIT_HASH"
-echo -e "${GREEN}Committed the changes to the deployment.yaml${NC}\n"
+# # Commit the changes
+# run_command git add .
+# run_command git commit -m "Update CMS image to $LATEST_COMMIT_HASH"
+# echo -e "${GREEN}Committed the changes to the deployment.yaml${NC}\n"
 
-# Push the changes
-run_command git push --set-upstream origin cms-release-$RELEASE_VERSION
-echo -e "${GREEN}Pushed the changes to the remote repository${NC}\n"
+# # Push the changes
+# run_command git push --set-upstream origin cms-release-$RELEASE_VERSION
+# echo -e "${GREEN}Pushed the changes to the remote repository${NC}\n"
 
-# Create PR
-PR_URL=$(gh pr create --title "Release CMS $RELEASE_VERSION" --body "Automated release notes for $RELEASE_VERSION" --base "master" --head "cms-release-$RELEASE_VERSION")
-if [ $? -ne 0 ]; then
-    handle_error "Failed to create a pull request."
-fi
-echo -e "${GREEN}Created PR for release CMS $RELEASE_VERSION${NC}"
-echo -e "${BLUE} just copy paste this to your team's slack channel${NC}"
-echo -e "Pleasse help me out with an approval on this PR for DEPLOYING $RELEASE_VERSION\n\n $PR_URL\nThank you!\n"
-echo -e "PR URL: $PR_URL" >> $LOG_FILE
+# # Create PR
+# PR_URL=$(gh pr create --title "Release CMS $RELEASE_VERSION" --body "Automated release notes for $RELEASE_VERSION" --base "master" --head "cms-release-$RELEASE_VERSION")
+# if [ $? -ne 0 ]; then
+#     handle_error "Failed to create a pull request."
+# fi
+# echo -e "${GREEN}Created PR for release CMS $RELEASE_VERSION${NC}"
+# echo -e "${BLUE} just copy paste this to your team's slack channel${NC}"
+# echo -e "Pleasse help me out with an approval on this PR for DEPLOYING $RELEASE_VERSION\n\n $PR_URL\nThank you!\n"
+# echo -e "PR URL: $PR_URL" >> $LOG_FILE
 
-echo -e "\n${YELLOW}Once it is approved, the new release will be deployed to production"
-echo -e "${YELLOW}Hopefully it's not Friday, good luck!${NC}"
+# echo -e "\n${YELLOW}Once it is approved, the new release will be deployed to production"
+# echo -e "${YELLOW}Hopefully it's not Friday, good luck!${NC}"
